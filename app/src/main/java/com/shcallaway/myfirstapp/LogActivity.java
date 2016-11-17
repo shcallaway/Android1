@@ -1,17 +1,15 @@
 package com.shcallaway.myfirstapp;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.ViewGroup;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class LogActivity extends AppCompatActivity {
 
@@ -21,6 +19,7 @@ public class LogActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
 
@@ -28,40 +27,59 @@ public class LogActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         logs = bundle.getString("logs");
 
+        // Populate logArray with timestamps.
         populateLogArrayFromLogs();
 
+        // Render the values from logArray in the view.
         listView = (ListView) findViewById(R.id.list);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, logArray);
         listView.setAdapter(adapter);
     }
 
     private void populateLogArrayFromLogs() {
+
         StringBuilder logBuilder = new StringBuilder("");
 
+        // Iterate over each character in the logs String.
         for (char ch : logs.toCharArray()) {
+            // If the character is a delimiter...
             if (ch == ',') {
-                String unformattedLog = logBuilder.toString();
-                String formattedLog = formatLog(unformattedLog);
-                logArray.add(formattedLog);
+                // Capture the subString...
+                String utcTime = logBuilder.toString();
+                // Convert it to local time...
+                String localTime = convertUtcToLocalTime(utcTime);
+                // Add it to the logArray...
+                logArray.add(localTime);
+                // And re-initialize the logBuilder.
                 logBuilder = new StringBuilder("");
             } else {
+                // Otherwise, keep building!
                 logBuilder.append(ch);
             }
         }
     }
 
-    private String formatLog(String unformattedLog) {
-        String formattedLog;
+    private String convertUtcToLocalTime(String utcTime) {
 
-        Date logDate = new Date(Long.parseLong(unformattedLog));
+        // Set up a SimpleDateFormat object with the same format we used earlier.
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.US);
-        formattedLog = sdf.format(logDate);
+        // Declare a variable to contain the output value.
+        // Also, initialize, just in case try-catch fails -- not ideal.
+        Date localTime = new Date();
 
-        // Do some magic to format the unformatted String...
-        return formattedLog;
+        // Try to parse a Date object from the utcTime String.
+        try {
+            // Assign the new Date to localTime.
+            localTime = sdf.parse(utcTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Return the String version of localTime.
+        return localTime.toString();
     }
 }
 
-// Make sure you can change timezone when reloading list activity, times change
-// wrap logging in logic: whether or not instance state bundle was changed (if null, app was just started)
+// Wrap "logging" in logic: whether or not instance state bundle was changed (if null, app was just started)

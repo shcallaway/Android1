@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -41,16 +44,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateLogsFromPreferences() {
+
         // Get logs from SharedPreferences.
         String logsFromPreferences = settings.getString("logs", null);
 
-        // If logs does not exist, populate logs using logsFromPreferences.
+        // If logs exist, populate logs using logsFromPreferences.
         if (logsFromPreferences != null) {
             logs = logsFromPreferences;
+        // Otherwise, initialize logs as an empty String.
+        } else {
+            logs = "";
         }
     }
 
     private void updateLogsInPreferences() {
+
         // Initialize the Editor.
         editor = settings.edit();
 
@@ -60,11 +68,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getCurrentDateString() {
-        // Return a log String of the current Date.
-        return String.valueOf(new Date().getTime());
+
+        // Get the current DateTime and format it.
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        return sdf.format(new Date());
     }
 
     private void addNewLogToLogs() {
+
         // Concatenate new log to logs String.
         logs += getCurrentDateString() + ",";
     }
