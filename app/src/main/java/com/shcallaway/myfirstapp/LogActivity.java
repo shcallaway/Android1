@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 public class LogActivity extends AppCompatActivity {
@@ -21,9 +20,11 @@ public class LogActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
+
+        // Set up the back button. :)
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Retrieve logs from the Bundle.
         Bundle bundle = getIntent().getExtras();
@@ -42,7 +43,6 @@ public class LogActivity extends AppCompatActivity {
     }
 
     private void populateLogArrayFromLogs() {
-
         StringBuilder logBuilder = new StringBuilder("");
 
         // Iterate over each character in the logs String.
@@ -65,7 +65,6 @@ public class LogActivity extends AppCompatActivity {
     }
 
     private String convertUtcToLocalTime(String utcTime) {
-
         // Set up a SimpleDateFormat object with the same format we used earlier.
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -93,9 +92,7 @@ public class LogActivity extends AppCompatActivity {
 
     static class LogComparator implements Comparator<String>
     {
-        public int compare(String firstLog, String secondLog)
-        {
-
+        public int compare(String firstLog, String secondLog) {
             System.out.println("Sorting: " + firstLog + " vs " + secondLog);
 
             char[] firstArray = firstLog.toCharArray();

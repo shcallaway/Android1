@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -37,14 +36,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToLogActivity(View view) {
-
         Intent intent = new Intent(this, LogActivity.class);
         intent.putExtra("logs", logs);
         startActivity(intent);
     }
 
     private void populateLogsFromPreferences() {
-
         // Get logs from SharedPreferences.
         String logsFromPreferences = settings.getString("logs", null);
 
@@ -58,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateLogsInPreferences() {
-
         // Initialize the Editor.
         editor = settings.edit();
 
@@ -68,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getCurrentDateString() {
-
         // Get the current DateTime and format it.
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -77,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addNewLogToLogs() {
-
         // Concatenate new log to logs String.
         logs += getCurrentDateString() + ",";
     }
