@@ -7,6 +7,8 @@ import android.widget.ListView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -29,6 +31,9 @@ public class LogActivity extends AppCompatActivity {
 
         // Populate logArray with timestamps.
         populateLogArrayFromLogs();
+
+        // Sort the array.
+        sortLogArrayAscending();
 
         // Render the values from logArray in the view.
         listView = (ListView) findViewById(R.id.list);
@@ -79,6 +84,43 @@ public class LogActivity extends AppCompatActivity {
 
         // Return the String version of localTime.
         return localTime.toString();
+    }
+
+    private void sortLogArrayAscending() {
+        Comparator<String> reverseComparator = Collections.reverseOrder(new LogComparator());
+        Collections.sort(logArray, reverseComparator);
+    }
+
+    static class LogComparator implements Comparator<String>
+    {
+        public int compare(String firstLog, String secondLog)
+        {
+
+            System.out.println("Sorting: " + firstLog + " vs " + secondLog);
+
+            char[] firstArray = firstLog.toCharArray();
+            char[] secondArray = secondLog.toCharArray();
+
+            for (int i = 0; i < firstArray.length; i++) {
+                // If it's the same character, skip to the next character.
+                // This handles non-numeric characters like "-" and whitespace too.
+                if (firstArray[i] == secondArray[i]) {
+                    continue;
+                // If the first char is greater than the second char,
+                // the first log must be "greater" than the second log.
+                } else if (firstArray[i] > secondArray[i]) {
+                    System.out.println("Winner: " + firstLog);
+                    return 1;
+                // Otherwise, the first log must be "less" than the second log.
+                } else {
+                    System.out.println("Winner:  " + secondLog);
+                    return -1;
+                }
+            }
+
+            // If the loop finishes, the logs are equal.
+            return 0;
+        }
     }
 }
 
